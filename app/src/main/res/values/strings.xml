@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">AndroidApp</string>
+    <string name="account_balance">Paskyros balansas</string>
+    <string name="eur">EUR</string>
+    <string name="usd">USD</string>
+    <string name="jpy">JPY</string>
+    <string name="account_commissions">Komisinių mokesčių suma</string>
+    <string name="conversion">Konvertavimas</string>
 </resources>
