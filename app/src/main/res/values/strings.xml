@@ -6,4 +6,5 @@
     <string name="jpy">JPY</string>
     <string name="account_commissions">Komisinių mokesčių suma</string>
     <string name="conversion">Konvertavimas</string>
+    <string name="convert">Konvertuoti</string>
 </resources>

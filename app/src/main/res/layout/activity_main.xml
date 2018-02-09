@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.arnassmicius.androidapp.MainActivity">
+    tools:context="com.example.arnassmicius.androidapp.activities.MainActivity">
 
     <android.support.constraint.Guideline
         android:id="@+id/left_guideline"
@@ -207,28 +207,43 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_conversion"/>
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/et_from_amount"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:ems="10"
-        android:inputType="number"
+        android:inputType="numberDecimal"
         app:layout_constraintEnd_toStartOf="@+id/center_guideline"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sv_from_currency"/>
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/et_to_amount"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:ems="10"
-        android:inputType="number"
+        android:inputType="numberDecimal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/center_guideline"
         app:layout_constraintTop_toBottomOf="@+id/sv_to_currency"/>
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/colorPrimary"
+        android:text="@string/convert"
+        android:textColor="@color/colorIcons"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/center_guideline"
+        app:layout_constraintTop_toBottomOf="@+id/et_to_amount"/>
+
 </android.support.constraint.ConstraintLayout>
