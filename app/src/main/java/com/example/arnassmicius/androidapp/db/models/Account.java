@@ -1,15 +1,17 @@
 package com.example.arnassmicius.androidapp.db.models;
 
-import com.example.arnassmicius.androidapp.dto.Currency;
-
 import io.realm.MutableRealmInteger;
 import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
 
 /**
  * Created by arnas on 18.2.9.
  */
 
 public class Account extends RealmObject {
+
+    @PrimaryKey
+    private int id;
 
     private double eurBalance;
     private double usdBalance;
@@ -21,67 +23,63 @@ public class Account extends RealmObject {
 
     private final MutableRealmInteger convertCounter = MutableRealmInteger.ofNull();
 
-    public double increaseBalance(Currency currency, double amount) {
-        switch(currency) {
-            case EUR:
-                eurBalance += amount;
-                return eurBalance;
-            case USD:
-                usdBalance += amount;
-                return usdBalance;
-            case JPY:
-                jpyBalance += amount;
-                return jpyBalance;
-            default:
-                return -1;
-        }
+    public double getEurBalance() {
+        return eurBalance;
     }
 
-    public double decreaseBalance(Currency currency, double amount) {
-        switch(currency) {
-            case EUR:
-                eurBalance -= amount;
-                return eurBalance;
-            case USD:
-                usdBalance -= amount;
-                return usdBalance;
-            case JPY:
-                jpyBalance -= amount;
-                return jpyBalance;
-            default:
-                return -1;
-        }
+    public void setEurBalance(double eurBalance) {
+        this.eurBalance = eurBalance;
     }
 
-    public double increaseComissions(Currency currency, double amount) {
-        switch(currency) {
-            case EUR:
-                eurCommissions += amount;
-                return eurCommissions;
-            case USD:
-                usdCommissions += amount;
-                return usdCommissions;
-            case JPY:
-                jpyCommissions += amount;
-                return jpyCommissions;
-            default:
-                return -1;
-        }
+    public double getUsdBalance() {
+        return usdBalance;
     }
 
-    public void increaseConvertCounter() {
-        convertCounter.increment(1);
+    public void setUsdBalance(double usdBalance) {
+        this.usdBalance = usdBalance;
     }
 
-    public void resetDatabase() {
-        eurBalance = 1000.00;
-        usdBalance = 0.00;
-        jpyBalance = 0.00;
+    public double getJpyBalance() {
+        return jpyBalance;
+    }
 
-        eurCommissions = 0.00;
-        usdCommissions = 0.00;
-        jpyCommissions = 0.00;
+    public void setJpyBalance(double jpyBalance) {
+        this.jpyBalance = jpyBalance;
+    }
 
-        convertCounter.set(0);
+    public double getEurCommissions() {
+        return eurCommissions;
+    }
+
+    public void setEurCommissions(double eurCommissions) {
+        this.eurCommissions = eurCommissions;
+    }
+
+    public double getUsdCommissions() {
+        return usdCommissions;
+    }
+
+    public void setUsdCommissions(double usdCommissions) {
+        this.usdCommissions = usdCommissions;
+    }
+
+    public double getJpyCommissions() {
+        return jpyCommissions;
+    }
+
+    public void setJpyCommissions(double jpyCommissions) {
+        this.jpyCommissions = jpyCommissions;
+    }
+
+    public MutableRealmInteger getConvertCounter() {
+        return convertCounter;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }
