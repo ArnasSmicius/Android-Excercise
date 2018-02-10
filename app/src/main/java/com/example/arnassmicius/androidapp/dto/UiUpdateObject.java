@@ -1,6 +1,6 @@
 package com.example.arnassmicius.androidapp.dto;
 
-import java.text.DecimalFormat;
+import static com.example.arnassmicius.androidapp.utilities.FormatHelper.formatDoubleToString;
 
 /**
  * Created by arnas on 18.2.10.
@@ -17,17 +17,12 @@ public class UiUpdateObject {
     private String jpyCommissions;
 
     public UiUpdateObject(double eurBalance, double usdBalance, double jpyBalance, double eurCommissions, double usdCommissions, double jpyCommissions) {
-        this.eurBalance = format(eurBalance);
-        this.usdBalance = format(usdBalance);
-        this.jpyBalance = format(jpyBalance);
-        this.eurCommissions = format(eurCommissions);
-        this.usdCommissions = format(usdCommissions);
-        this.jpyCommissions = format(jpyCommissions);
-    }
-
-    private static String format(double digit) {
-        DecimalFormat decimalFormat = new DecimalFormat("0.00");
-        return decimalFormat.format(digit);
+        this.eurBalance = formatDoubleToString(eurBalance);
+        this.usdBalance = formatDoubleToString(usdBalance);
+        this.jpyBalance = formatDoubleToString(jpyBalance);
+        this.eurCommissions = formatDoubleToString(eurCommissions);
+        this.usdCommissions = formatDoubleToString(usdCommissions);
+        this.jpyCommissions = formatDoubleToString(jpyCommissions);
     }
 
     public String getEurBalance() {
