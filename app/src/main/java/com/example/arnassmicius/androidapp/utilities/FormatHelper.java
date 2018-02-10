@@ -11,4 +11,11 @@ public class FormatHelper {
         DecimalFormat decimalFormat = new DecimalFormat("0.00");
         return decimalFormat.format(digit);
     }
+
+    public static double formatStringToDouble(String digit) {
+        if (digit.isEmpty()) {
+            return 0.00;
+        }
+        return Double.parseDouble(digit);
+    }
 }

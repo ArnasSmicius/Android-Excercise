@@ -14,4 +14,17 @@ public enum Currency {
     Currency(String currency) {
         this.currency = currency;
     }
+
+    public static Currency getCurrencyByString(String currencyString) {
+        switch (currencyString) {
+            case "EUR":
+                return Currency.EUR;
+            case "USD":
+                return Currency.USD;
+            case "JPY":
+                return Currency.JPY;
+            default:
+                return null;
+        }
+    }
 }

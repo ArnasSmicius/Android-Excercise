@@ -10,16 +10,16 @@ import static com.example.arnassmicius.androidapp.utilities.FormatHelper.formatD
  * Created by arnas on 18.2.10.
  */
 
-public class UriHelper {
+public class UrlHelper {
 
     private static final String BASE_URI = "http://api.evp.lt/currency/commercial/exchange/";
 
-    public static Uri createRequestUri(Currency fromCurrency, double amount, Currency toCurrency) {
+    public static String createRequestUri(Currency fromCurrency, double amount, Currency toCurrency) {
         String from = formatDoubleToString(amount) + "-" + fromCurrency.toString();
         String to = toCurrency.toString();
         return Uri.parse(BASE_URI).buildUpon()
                 .appendPath(from)
                 .appendPath(to)
-                .appendPath("latest").build();
+                .appendPath("latest").build().toString();
     }
 }
