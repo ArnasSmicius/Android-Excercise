@@ -13,61 +13,61 @@ public class Account extends RealmObject {
     @PrimaryKey
     private int id;
 
-    private double eurBalance;
-    private double usdBalance;
-    private double jpyBalance;
+    private long eurBalance;
+    private long usdBalance;
+    private long jpyBalance;
 
-    private double eurCommissions;
-    private double usdCommissions;
-    private double jpyCommissions;
+    private long eurCommissions;
+    private long usdCommissions;
+    private long jpyCommissions;
 
     private final MutableRealmInteger convertCounter = MutableRealmInteger.ofNull();
 
-    public double getEurBalance() {
+    public long getEurBalance() {
         return eurBalance;
     }
 
-    public void setEurBalance(double eurBalance) {
+    public void setEurBalance(long eurBalance) {
         this.eurBalance = eurBalance;
     }
 
-    public double getUsdBalance() {
+    public long getUsdBalance() {
         return usdBalance;
     }
 
-    public void setUsdBalance(double usdBalance) {
+    public void setUsdBalance(long usdBalance) {
         this.usdBalance = usdBalance;
     }
 
-    public double getJpyBalance() {
+    public long getJpyBalance() {
         return jpyBalance;
     }
 
-    public void setJpyBalance(double jpyBalance) {
+    public void setJpyBalance(long jpyBalance) {
         this.jpyBalance = jpyBalance;
     }
 
-    public double getEurCommissions() {
+    public long getEurCommissions() {
         return eurCommissions;
     }
 
-    public void setEurCommissions(double eurCommissions) {
+    public void setEurCommissions(long eurCommissions) {
         this.eurCommissions = eurCommissions;
     }
 
-    public double getUsdCommissions() {
+    public long getUsdCommissions() {
         return usdCommissions;
     }
 
-    public void setUsdCommissions(double usdCommissions) {
+    public void setUsdCommissions(long usdCommissions) {
         this.usdCommissions = usdCommissions;
     }
 
-    public double getJpyCommissions() {
+    public long getJpyCommissions() {
         return jpyCommissions;
     }
 
-    public void setJpyCommissions(double jpyCommissions) {
+    public void setJpyCommissions(long jpyCommissions) {
         this.jpyCommissions = jpyCommissions;
     }
 

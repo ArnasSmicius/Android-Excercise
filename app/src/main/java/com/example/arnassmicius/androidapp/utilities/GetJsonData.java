@@ -13,6 +13,11 @@ import org.json.JSONObject;
  * Created by arnas on 18.2.10.
  */
 
+/**
+ * This AsyncTask class is for downloading Json object from the internet.
+ * This class works on a separate Thread, so you have to implement OnJsonObjectDownloadComplete interface to get
+ * Json object when download is finished.
+ */
 public class GetJsonData extends AsyncTask<String, Void, JSONObject> {
     private static final String TAG = "GetJsonData";
     private OnJsonObjectDownloadComplete onDownloadCompleteCallback;

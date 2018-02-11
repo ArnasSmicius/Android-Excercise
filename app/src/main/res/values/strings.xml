@@ -8,6 +8,7 @@
     <string name="conversion">Konvertavimas</string>
     <string name="convert">Konvertuoti</string>
     <string name="not_enough_money">Atsiprašome, deja Jums nepakanka lėšų</string>
+    <string name="conversion_within_same_currency">Atsiprašome, tačiau konvertavimas į tą pačią valiutą negalimas</string>
     <string name="enter_positive_amount">Prašome įvesti teigiamą sumą</string>
     <string name="print_conversion_infromation">Jūs konvertavote %1$s %2$s į %3$s %4$s. Komisinis mokestis - %5$s %6$s.</string>
 </resources>

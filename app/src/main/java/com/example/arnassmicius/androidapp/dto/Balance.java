@@ -4,26 +4,29 @@ package com.example.arnassmicius.androidapp.dto;
  * Created by arnas on 18.2.10.
  */
 
+/**
+ * This is a Data Transfer Object for transfering account balance information within the application
+ */
 public class Balance {
-    private double eurBalance;
-    private double usdBalance;
-    private double jpyBalance;
+    private long eurBalance;
+    private long usdBalance;
+    private long jpyBalance;
 
-    public Balance(double eurBalance, double usdBalance, double jpyBalance) {
+    public Balance(long eurBalance, long usdBalance, long jpyBalance) {
         this.eurBalance = eurBalance;
         this.usdBalance = usdBalance;
         this.jpyBalance = jpyBalance;
     }
 
-    public double getEurBalance() {
+    public long getEurBalance() {
         return eurBalance;
     }
 
-    public double getUsdBalance() {
+    public long getUsdBalance() {
         return usdBalance;
     }
 
-    public double getJpyBalance() {
+    public long getJpyBalance() {
         return jpyBalance;
     }
 }

@@ -3,16 +3,16 @@ package com.example.arnassmicius.androidapp.activities;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Toast;
 
 import com.example.arnassmicius.androidapp.R;
 import com.example.arnassmicius.androidapp.databinding.ActivityMainBinding;
 import com.example.arnassmicius.androidapp.db.service.AccountService;
 import com.example.arnassmicius.androidapp.dto.ConversionData;
+import com.example.arnassmicius.androidapp.dto.ConvertError;
 import com.example.arnassmicius.androidapp.dto.Currency;
 import com.example.arnassmicius.androidapp.dto.UiUpdateObject;
 import com.example.arnassmicius.androidapp.utilities.ConvertManager;
@@ -20,12 +20,10 @@ import com.example.arnassmicius.androidapp.utilities.FormatHelper;
 
 import io.realm.Realm;
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener,
-        ConvertManager.OnConvertComplete {
+public class MainActivity extends AppCompatActivity implements ConvertManager.OnConvertComplete {
 
     ActivityMainBinding ui;
 
-    Realm realm;
     AccountService accountService;
 
     private static final String TAG = "MainActivity";
@@ -35,45 +33,54 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         super.onCreate(savedInstanceState);
         ui = DataBindingUtil.setContentView(this, R.layout.activity_main);
         Realm.init(this);
-        realm = Realm.getDefaultInstance();
         initialize();
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        if (view.getId() == ui.btConvert.getId()) {
-            Toast.makeText(this, "Convert is pressed", Toast.LENGTH_SHORT).show();
-        }
-    }
+    /*
+    This listener is activated when Convert button is clicked
+     */
 
     View.OnClickListener convert = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             ConversionData conversionData = new ConversionData(accountService);
-            conversionData.setAmount(FormatHelper.formatStringToDouble(ui.etFromAmount.getText().toString()));
+            conversionData.setAmount(FormatHelper.formatStringToLong(ui.etFromAmount.getText().toString()));
             conversionData.setFromCurrency((Currency) ui.svFromCurrency.getSelectedItem());
             conversionData.setToCurrency((Currency) ui.svToCurrency.getSelectedItem());
 
-            if (conversionData.getAmount() <= 0.00) {
-                ui.tvMessage.setText(R.string.enter_positive_amount);
-            } else if (conversionData.getAmountWithCommissions() > accountService.getBalance(conversionData.getFromCurrency())) {
-                ui.tvMessage.setText(R.string.not_enough_money);
-            } else {
-                showProgressBar();
-                ConvertManager convertManager = new ConvertManager(MainActivity.this, conversionData, accountService);
-                convertManager.convert();
+            ConvertManager convertManager = new ConvertManager(MainActivity.this, conversionData, accountService);
+            ConvertError status = convertManager.convert();
+            Log.d(TAG, "onClick: status = " + status.toString());
+
+            switch (status) {
+                case NO_ERRORS:
+                    showProgressBar();
+                    break;
+                case CONVERSION_WITHIN_SAME_CURRENCY:
+                    ui.tvMessage.setText(R.string.conversion_within_same_currency);
+                    break;
+                case NOT_ENOUGH_MONEY:
+                    ui.tvMessage.setText(R.string.not_enough_money);
+                    break;
+                case INVALID_FORMAT_ENTERED:
+                    ui.tvMessage.setText(R.string.enter_positive_amount);
+                    break;
             }
         }
     };
 
+    /*
+    It's a ConvertManager.OnConvertComplete method, which is activated when Conversion is completed
+     */
+
     @Override
-    public void onConvertComplete(double fromAmount, Currency fromCurrency, double toAmount, Currency toCurrency, double commissionAmount) {
+    public void onConvertComplete(long fromAmount, Currency fromCurrency, long toAmount, Currency toCurrency, long commissionAmount) {
         String message = getResources().getString(R.string.print_conversion_infromation,
-                FormatHelper.formatDoubleToString(fromAmount),
+                FormatHelper.formatLongToString(fromAmount),
                 fromCurrency.toString(),
-                FormatHelper.formatDoubleToString(toAmount),
+                FormatHelper.formatLongToString(toAmount),
                 toCurrency.toString(),
-                FormatHelper.formatDoubleToString(commissionAmount),
+                FormatHelper.formatLongToString(commissionAmount),
                 fromCurrency.toString()
                 );
         ui.tvMessage.setText(message);
@@ -82,7 +89,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void initialize() {
-        accountService = new AccountService(realm);
+        accountService = new AccountService();
         accountService.init();
         updateUiBalanceAndCommissions();
 
@@ -92,12 +99,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         ui.svToCurrency.setAdapter(adapter);
 
         ui.btConvert.setOnClickListener(convert);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        realm.close();
     }
 
     private void showProgressBar() {

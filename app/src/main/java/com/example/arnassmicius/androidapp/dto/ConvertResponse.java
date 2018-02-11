@@ -5,22 +5,22 @@ package com.example.arnassmicius.androidapp.dto;
  */
 
 public class ConvertResponse {
-    private double amount;
+    private long amount;
     private Currency currency;
 
     public ConvertResponse() {
     }
 
-    public ConvertResponse(double amount, Currency currency) {
+    public ConvertResponse(long amount, Currency currency) {
         this.amount = amount;
         this.currency = currency;
     }
 
-    public double getAmount() {
+    public long getAmount() {
         return amount;
     }
 
-    public void setAmount(double amount) {
+    public void setAmount(long amount) {
         this.amount = amount;
     }
 

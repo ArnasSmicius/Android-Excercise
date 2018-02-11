@@ -1,6 +1,6 @@
 package com.example.arnassmicius.androidapp.dto;
 
-import static com.example.arnassmicius.androidapp.utilities.FormatHelper.formatDoubleToString;
+import static com.example.arnassmicius.androidapp.utilities.FormatHelper.formatLongToString;
 
 /**
  * Created by arnas on 18.2.10.
@@ -16,13 +16,13 @@ public class UiUpdateObject {
     private String usdCommissions;
     private String jpyCommissions;
 
-    public UiUpdateObject(double eurBalance, double usdBalance, double jpyBalance, double eurCommissions, double usdCommissions, double jpyCommissions) {
-        this.eurBalance = formatDoubleToString(eurBalance);
-        this.usdBalance = formatDoubleToString(usdBalance);
-        this.jpyBalance = formatDoubleToString(jpyBalance);
-        this.eurCommissions = formatDoubleToString(eurCommissions);
-        this.usdCommissions = formatDoubleToString(usdCommissions);
-        this.jpyCommissions = formatDoubleToString(jpyCommissions);
+    public UiUpdateObject(long eurBalance, long usdBalance, long jpyBalance, long eurCommissions, long usdCommissions, long jpyCommissions) {
+        this.eurBalance = formatLongToString(eurBalance);
+        this.usdBalance = formatLongToString(usdBalance);
+        this.jpyBalance = formatLongToString(jpyBalance);
+        this.eurCommissions = formatLongToString(eurCommissions);
+        this.usdCommissions = formatLongToString(usdCommissions);
+        this.jpyCommissions = formatLongToString(jpyCommissions);
     }
 
     public String getEurBalance() {

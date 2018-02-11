@@ -1,7 +1,5 @@
 package com.example.arnassmicius.androidapp.db.service;
 
-import android.support.annotation.NonNull;
-
 import com.example.arnassmicius.androidapp.db.models.Account;
 import com.example.arnassmicius.androidapp.dto.Currency;
 import com.example.arnassmicius.androidapp.dto.UiUpdateObject;
@@ -14,31 +12,42 @@ import io.realm.Realm;
 
 public class AccountService {
 
-    private Realm db;
-
-    public AccountService(@NonNull Realm realm) {
-        db = realm;
-    }
-
+    /**
+     * This method is used to initialise AccountService. This method creates Account object (if it not exist in a database)
+     * and sets it's initial values in a database.
+     */
     public void init() {
-        db.executeTransaction(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                if (realm.where(Account.class).equalTo("id", 1).findFirst() == null) {
-                    Account account = realm.createObject(Account.class, 1);
-                    account.setEurBalance(1000.00);
-                    account.setUsdBalance(0.00);
-                    account.setJpyBalance(0.00);
-                    account.setEurCommissions(0.00);
-                    account.setUsdBalance(0.00);
-                    account.setJpyBalance(0.00);
-                    account.getConvertCounter().set(0);
+        Realm realm = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            realm.executeTransaction(new Realm.Transaction() {
+                @Override
+                public void execute(Realm realm) {
+                    if (realm.where(Account.class).equalTo("id", 1).findFirst() == null) {
+                        Account account = realm.createObject(Account.class, 1);
+                        account.setEurBalance(100000);
+                        account.setUsdBalance(0);
+                        account.setJpyBalance(0);
+                        account.setEurCommissions(0);
+                        account.setUsdBalance(0);
+                        account.setJpyBalance(0);
+                        account.getConvertCounter().set(0);
+                    }
                 }
+            });
+        } finally {
+            if (realm != null) {
+                realm.close();
             }
-        });
+        }
     }
 
-    public void increaseBalance(final Currency currency, final double amount) {
+    /**
+    *This method is used to increase account balance in a local database
+    *@param currency This is a currency which will be increased
+    *@param amount This is amount in cents, which will be increased
+     */
+    public void increaseBalance(final Currency currency, final long amount) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
@@ -67,7 +76,12 @@ public class AccountService {
 
     }
 
-    public void decreaseBalance(final Currency currency, final double amount) {
+    /**
+     * This method is used to decrease account balance in a local database
+     * @param currency This is a currency which will be decreased
+     * @param amount This is amount in cents, which will be decreased
+     */
+    public void decreaseBalance(final Currency currency, final long amount) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
@@ -93,10 +107,15 @@ public class AccountService {
                 realm.close();
             }
         }
-
     }
 
-    public void increaseCommissions(final Currency currency, final double amount) {
+    /**
+     * This method is used to increase commission taxes in a local database. Commission taxes are calculated separately for
+     * each currency
+     * @param currency This is a currency which commission taxes will be increased
+     * @param amount This is amount in cents which will be increased
+     */
+    public void increaseCommissions(final Currency currency, final long amount) {
         Realm realm = null;
         try {
             realm = Realm.getDefaultInstance();
@@ -125,6 +144,9 @@ public class AccountService {
 
     }
 
+    /**
+     * This method is used to increase the number of converts made
+     */
     public void increaseConvertCounter() {
         Realm realm = null;
         try {
@@ -144,6 +166,10 @@ public class AccountService {
 
     }
 
+    /**
+     * This method is used to get UI update object for all currencies balance and commission taxes
+     * @return UiUpdateObject which contains all currencies balance and commission taxes
+     */
     public UiUpdateObject getUiUpdateObject() {
         Account account = getAccount();
         return new UiUpdateObject(account.getEurBalance(),
@@ -154,7 +180,12 @@ public class AccountService {
                 account.getJpyCommissions());
     }
 
-    public double getBalance(Currency currency) {
+    /**
+     * This method is used to get balance of given currency
+     * @param currency This is a currency which balance will be returned
+     * @return long Account balance in cents of a given currency
+     */
+    public long getBalance(Currency currency) {
         Account account = getAccount();
         switch (currency) {
             case EUR:
@@ -168,11 +199,31 @@ public class AccountService {
         }
     }
 
+    /**
+     * This method is used to get a number of successful converts already made
+     * @return long The number of successful converts already made
+     */
     public long getConvertCounter() {
         return getAccount().getConvertCounter().get();
     }
 
+    /**
+     * This private method is used to get a copy of Account from a database. This Account copy can be used only to get
+     * Account values.
+     * @return account A copy of an Account
+     */
     private Account getAccount() {
-        return db.where(Account.class).equalTo("id", 1).findFirst();
+        Realm realm = null;
+        Account accountCopy = null;
+        try {
+            realm = Realm.getDefaultInstance();
+            Account account = realm.where(Account.class).equalTo("id", 1).findFirst();
+            accountCopy = realm.copyFromRealm(account);
+        } finally {
+            if (realm != null) {
+                realm.close();
+            }
+        }
+        return accountCopy;
     }
 }

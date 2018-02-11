@@ -4,6 +4,9 @@ package com.example.arnassmicius.androidapp.dto;
  * Created by arnas on 18.2.9.
  */
 
+/**
+ * This enum is used as a constants for currency type
+ */
 public enum Currency {
     EUR("EUR"),
     USD("USD"),
