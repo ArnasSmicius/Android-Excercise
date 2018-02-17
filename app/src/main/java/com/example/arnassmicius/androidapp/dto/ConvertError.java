@@ -11,7 +11,8 @@ public enum ConvertError {
     INVALID_FORMAT_ENTERED("invalid_format_entered"),
     NOT_ENOUGH_MONEY("not_enough_money"),
     CONVERSION_WITHIN_SAME_CURRENCY("conversion_within_same_currency"),
-    NO_ERRORS("no_errors");
+    NO_ERRORS("no_errors"),
+    NO_INTERNET_CONNECTION("no_internet_connection");
 
     private String convertError;
 

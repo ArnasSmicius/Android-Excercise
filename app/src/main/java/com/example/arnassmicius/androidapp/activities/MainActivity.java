@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.Toast;
 
 import com.example.arnassmicius.androidapp.R;
 import com.example.arnassmicius.androidapp.databinding.ActivityMainBinding;
@@ -56,6 +57,9 @@ public class MainActivity extends AppCompatActivity implements ConvertManager.On
                 case NO_ERRORS:
                     showProgressBar();
                     break;
+                case NO_INTERNET_CONNECTION:
+                    Toast.makeText(MainActivity.this, "Please turn on an internet", Toast.LENGTH_SHORT).show();
+                    break;
                 case CONVERSION_WITHIN_SAME_CURRENCY:
                     ui.tvMessage.setText(R.string.conversion_within_same_currency);
                     break;
@@ -86,6 +90,13 @@ public class MainActivity extends AppCompatActivity implements ConvertManager.On
         ui.tvMessage.setText(message);
         updateUiBalanceAndCommissions();
         hideProgressBar();
+    }
+
+    @Override
+    public void onConvertFailed(ConvertError error) {
+        ui.tvMessage.setText(R.string.no_internet);
+        hideProgressBar();
+
     }
 
     private void initialize() {

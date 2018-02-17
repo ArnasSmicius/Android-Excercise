@@ -1,16 +1,13 @@
 package com.example.arnassmicius.androidapp.utilities;
 
 import android.support.annotation.NonNull;
-import android.util.Log;
 
 import com.example.arnassmicius.androidapp.db.service.AccountService;
 import com.example.arnassmicius.androidapp.dto.ConversionData;
 import com.example.arnassmicius.androidapp.dto.ConvertError;
-import com.example.arnassmicius.androidapp.dto.ConvertResponse;
 import com.example.arnassmicius.androidapp.dto.Currency;
-
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.example.arnassmicius.androidapp.retrofit.CurrencyConversionService;
+import com.example.arnassmicius.androidapp.retrofit.model.CurrencyConvertResult;
 
 /**
  * Created by arnas on 18.2.10.
@@ -20,19 +17,19 @@ import org.json.JSONObject;
  * This class is used to manage a currency conversion. To get conversion information, you have to
  * implement OnConvertComplete interface to access the data when convert is completed.
  */
-public class ConvertManager implements GetJsonData.OnJsonObjectDownloadComplete {
+public class ConvertManager implements CurrencyConversionService.OnDownloadCompleted {
     private static final String TAG = "ConvertManager";
 
     private OnConvertComplete onConvertCompleteCallback;
     private ConversionData conversionData;
     private AccountService accountService;
-    private ConvertResponse response;
 
     /**
      * This interface is used to get conversion data after it's finished to process
      */
     public interface OnConvertComplete {
         void onConvertComplete(long fromAmount, Currency fromCurrency, long toAmount, Currency toCurrency, long commissionAmount);
+        void onConvertFailed(ConvertError error);
     }
 
     public ConvertManager(@NonNull OnConvertComplete onConvertComplete, @NonNull ConversionData conversionData, AccountService accountService) {
@@ -48,17 +45,23 @@ public class ConvertManager implements GetJsonData.OnJsonObjectDownloadComplete 
     public ConvertError convert() {
         ConvertError status = checkIfConversionIsPossible();
         if (status == ConvertError.NO_ERRORS) {
-            String url = buildUrl();
-            downloadJsonObject(url);
+            CurrencyConversionService.getCurrencyConvertResult(
+                    this,
+                    FormatHelper.formatLongToString(conversionData.getAmount()),
+                    conversionData.getFromCurrency().toString(),
+                    conversionData.getToCurrency().toString()
+            );
         }
         return status;
     }
 
     @Override
-    public void onJsonObjectDownloadCompleted(JSONObject jsonObject) {
-        response = convertJsonResponseToPojo(jsonObject);
-        makeConvert();
-
+    public void OnDownloadCompleted(CurrencyConvertResult result) {
+        if(result == null) {
+            onConvertCompleteCallback.onConvertFailed(ConvertError.NO_INTERNET_CONNECTION);
+        } else {
+            makeConvert(result);
+        }
     }
 
     /**
@@ -82,55 +85,12 @@ public class ConvertManager implements GetJsonData.OnJsonObjectDownloadComplete 
      * This is a private method which is used to make actual conversion.
      * Make sure that conversion is possible before a conversion
      */
-    private void makeConvert() {
+    private void makeConvert(CurrencyConvertResult result) {
         accountService.decreaseBalance(conversionData.getFromCurrency(), conversionData.getAmountWithCommissions());
         accountService.increaseCommissions(conversionData.getFromCurrency(), conversionData.getCommissions());
-        accountService.increaseBalance(response.getCurrency(), response.getAmount());
+        accountService.increaseBalance(Currency.getCurrencyByString(result.getCurrency()), FormatHelper.formatStringToLong(result.getAmount()));
         accountService.increaseConvertCounter();
         onConvertCompleteCallback.onConvertComplete(conversionData.getAmount(), conversionData.getFromCurrency(),
-                response.getAmount(), response.getCurrency(), conversionData.getCommissions());
+                FormatHelper.formatStringToLong(result.getAmount()), Currency.getCurrencyByString(result.getCurrency()), conversionData.getCommissions());
     }
-
-    /**
-     * This private method is used to build conversion request url
-     * @return Conversion request url in String
-     */
-    private String buildUrl() {
-        return UrlHelper.createRequestUrl(conversionData.getFromCurrency(), conversionData.getAmount(), conversionData.getToCurrency());
-    }
-
-    /**
-     * This private method is used to download Json object from the server
-     * @param url Server request url
-     */
-    private void downloadJsonObject(String url) {
-        GetJsonData getJsonData = new GetJsonData(this);
-        getJsonData.execute(url);
-    }
-
-    /**
-     * This private method is used to convert server response to a Java object for manipulating response data more easily within
-     * an application
-     * @param jsonObject This is a Json object that will be converted to ConvertResponse object
-     * @return Converted ConvertResponse object
-     */
-    private ConvertResponse convertJsonResponseToPojo(JSONObject jsonObject) {
-        double amount;
-        String currencyString;
-        Currency currency;
-
-        try {
-            amount = jsonObject.getDouble("amount");
-            currencyString = jsonObject.getString("currency");
-        } catch (JSONException e) {
-            Log.e(TAG, "convertJsonResponseToPojo: error occurred when parsing JSON response from server");
-            return null;
-        }
-
-        currency = Currency.getCurrencyByString(currencyString);
-        long amountLong = Math.round(amount * 100);
-
-        return new ConvertResponse(amountLong, currency);
-    }
-
 }
